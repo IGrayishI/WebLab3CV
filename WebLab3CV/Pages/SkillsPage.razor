@@ -1,0 +1,17 @@
+﻿@page "/skills"
+@using ClassLibrary.Models
+
+<PageTitle>My Skills</PageTitle>
+
+<h1>Skills</h1>
+
+@foreach (var item in mySkills)
+{
+    <h5>@item.Title</h5>
+    <p>@item.Description</p>
+    <p>@item.SkillLevel / 10</p>
+}
+
+@code {
+    List<Skills> mySkills = new() { new("Breathing", "Taking Breaths every now and then", 10) };
+}
