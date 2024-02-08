@@ -5,13 +5,61 @@
 
 <h1>Skills</h1>
 
-@foreach (var item in mySkills)
+@foreach (var item in listOfSkills)
 {
-    <h5>@item.Title</h5>
-    <p>@item.Description</p>
-    <p>@item.SkillLevel / 10</p>
+    <div>
+        <h5>@item.Title</h5>
+        <p>@item.Description</p>
+        <p>@item.SkillLevel / 10</p>
+    </div>
 }
 
 @code {
-    List<Skills> mySkills = new() { new("Breathing", "Taking Breaths every now and then", 10) };
+    List<Skills> listOfSkills = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await ListSkills("https://localhost:7256");
+
+        }
+        catch (Exception ex)
+        {
+            // Handle any exceptions that occur during the request
+            Console.WriteLine("An error occurred while trying to connect to server: " + ex.Message);
+        }
+    }
+
+    public async Task ListSkills(string baseAddress)
+    {
+        try
+        {
+            // Create a new instance of HttpClient with the provided base address
+            using (var httpClient = new HttpClient { BaseAddress = new Uri(baseAddress) })
+            {
+                // Make GET request to your API endpoint
+                var response = await httpClient.GetAsync("/skills");
+
+                // Check if the request was successful
+                if (response.IsSuccessStatusCode)
+                {
+                    // Deserialize the response body into a list of products
+                    listOfSkills = await response.Content.ReadFromJsonAsync<List<Skills>>();
+                }
+                else
+                {
+                    // Handle error if the request was not successful
+                    // For example, you can log the error or display a message to the user
+                    Console.WriteLine("Failed to retrieve products. Status code: " + response.StatusCode);
+                    
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle any exceptions that occur during the request
+            Console.WriteLine("An error occurred while retrieving skills: " + ex.Message);
+        }
+    }
 }

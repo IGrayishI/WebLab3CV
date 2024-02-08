@@ -64,18 +64,20 @@ app.MapGet("/skills/{id}", async (ApplicationDbContext dbContext, Guid id) =>
 });
 
 //Create
-app.MapPost("/Skills", async (ApplicationDbContext dbContext, Skills product) =>
+app.MapPost("/skills", async (ApplicationDbContext dbContext, Skills skill) =>
 {
     try
     {
-        var newProduct = new Skills(
-            product.Title,
-            product.Description,
-            product.SkillLevel);
+        var newSkill = new Skills()
+        {
+            Title = skill.Title,
+            Description = skill.Description,
+            SkillLevel = skill.SkillLevel
+        };
 
-        await dbContext.Skills.AddAsync(newProduct);
+        await dbContext.Skills.AddAsync(newSkill);
         await dbContext.SaveChangesAsync();
-        return Results.Ok(newProduct);
+        return Results.Ok(newSkill);
 
     }
     catch

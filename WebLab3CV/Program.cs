@@ -5,12 +5,16 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using WebLab3CV.Areas.Identity;
-using WebLab3CV.Data;
+using ClassLibrary.Data;
+using WebLab3CV.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var APIconnection = builder.Configuration.GetConnectionString("APIConnection") ?? throw new InvalidOperationException("Connection string 'APIConnection' not found.");
+
+builder.Services.AddSingleton(APIconnection);
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -19,6 +23,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<APICRUD>();
 
 var app = builder.Build();
 
