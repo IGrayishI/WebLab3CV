@@ -61,8 +61,8 @@ Welcome to your new app.
     {
         try
         {
-            NewSkill = new() { SkillLevel = 0, Title = "", Description = "" };
             await apiCRUD.AddSkill(APIConnection, NewSkill);
+            NewSkill = new() { SkillLevel = 0, Title = "", Description = "" };
 
         } catch(Exception ex)
         {
