@@ -19,30 +19,46 @@ Welcome to your new app.
                 <h4>@item.Title</h4>
                 <p>@item.Description</p>
                 <p>@item.SkillLevel /10</p>
+                <p>@item.YearsOfExperience Years of Experience</p>
             </div>
         }
     </NotAuthorized>
+    <Authorized>
+
+    </Authorized>
 </AuthorizeView>
-
+        
+        <EditForm Model="NewSkill" OnValidSubmit="SubmitSkill">
+            <DataAnnotationsValidator />
+        
+            <div class="form-group">
+            <label>Title</label>
+            <InputText class="form-control" @bind-Value="NewSkill.Title" ></InputText>
+            </div>
+        
+            <div class="form-group">
+            <label>Description</label>
+            <InputText class="form-control" @bind-Value="NewSkill.Description" ></InputText>
+            </div>
+        
+            <div class="form-group">
+                <label>Level</label>
+                <InputNumber class="form-control" @bind-Value="NewSkill.SkillLevel"></InputNumber>
+            </div>
     <div class="form-group">
-    <label>Title</label>
-    <InputText class="form-control" @bind-Value="NewSkill.Title" @bind-Value:event="oninput"></InputText>
+        <label>Years of Experience</label>
+        <InputNumber class="form-control" @bind-Value="NewSkill.YearsOfExperience"></InputNumber>
     </div>
-    <div class="form-group">
-    <label>Description</label>
-    <InputText class="form-control" @bind-Value="NewSkill.Description" @bind-Value:event="oninput"></InputText>
-    </div>
-    <button class="btn btn-primary" @onclick="SubmitSkill">Submit</button>
-
-    
-
+            <button class="btn btn-primary" type="submit" >Submit</button>
+        
+        </EditForm>
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 
+        
 @code {
-
-    private Skills NewSkill { get; set; } = new() { SkillLevel = 2, Title = "", Description = "" };
-    List<Skills> listOfSkills = new();
+    private Skills NewSkill { get; set; } = new();
+    List<Skills> listOfSkills { get; set; }
 
 
     protected override async Task OnInitializedAsync()
@@ -62,15 +78,12 @@ Welcome to your new app.
         try
         {
             await apiCRUD.AddSkill(APIConnection, NewSkill);
-            NewSkill = new() { SkillLevel = 0, Title = "", Description = "" };
+            NewSkill = new();
 
         } catch(Exception ex)
         {
             Console.WriteLine(ex.Message);
         }
-
     }
-
-    
 
 }

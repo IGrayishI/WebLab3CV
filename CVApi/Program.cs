@@ -72,7 +72,8 @@ app.MapPost("/skills", async (ApplicationDbContext dbContext, Skills skill) =>
         {
             Title = skill.Title,
             Description = skill.Description,
-            SkillLevel = skill.SkillLevel
+            SkillLevel = skill.SkillLevel,
+            YearsOfExperience = skill.YearsOfExperience,
         };
 
         await dbContext.Skills.AddAsync(newSkill);
@@ -99,6 +100,7 @@ app.MapPut("/Skills/{id}", async (ApplicationDbContext dbContext, Guid id, Skill
             skillsToUpdate.Title = skills.Title;
             skillsToUpdate.Description = skills.Description;
             skillsToUpdate.SkillLevel = skills.SkillLevel;
+            skillsToUpdate.YearsOfExperience = skills.YearsOfExperience;
             
 
             await dbContext.SaveChangesAsync();
