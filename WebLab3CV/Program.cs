@@ -11,19 +11,19 @@ using WebLab3CV.Shared;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 var APIconnection = builder.Configuration.GetConnectionString("APIConnection") ?? throw new InvalidOperationException("Connection string 'APIConnection' not found.");
 
 builder.Services.AddSingleton(APIconnection);
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    //options.UseSqlServer(connectionString));
-//builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-builder.Services.AddSingleton(x => new HttpClient() { BaseAddress = new Uri(APIconnection) });
+builder.Services.AddHttpClient();
 builder.Services.AddSingleton<APICRUD>();
 
 

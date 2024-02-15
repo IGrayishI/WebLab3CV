@@ -56,10 +56,6 @@ namespace WebLab3CV.Shared
                 httpClient = new HttpClient { BaseAddress = new Uri(baseAdress) };
                 var response = await httpClient.PostAsJsonAsync("/skills", skill);
 
-                var data = await response.Content.ReadFromJsonAsync<JsonElement>();
-
-                Guid objectID = data.GetProperty("id").GetGuid();
-                Console.WriteLine(objectID);
                 return response.IsSuccessStatusCode;
 
 
