@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,6 +14,9 @@ builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+//Added HttpClient as a service to make the connection work..?
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
@@ -64,26 +68,18 @@ app.MapGet("/skills/{id}", async (ApplicationDbContext dbContext, Guid id) =>
 });
 
 //Create
-app.MapPost("/skills", async (ApplicationDbContext dbContext, Skills skill) =>
+app.MapPost("/skill", async (ApplicationDbContext dbContext, Skills skill) =>
 {
     try
     {
-        var newSkill = new Skills()
-        {
-            Title = skill.Title,
-            Description = skill.Description,
-            SkillLevel = skill.SkillLevel,
-            YearsOfExperience = skill.YearsOfExperience,
-        };
-
-        await dbContext.Skills.AddAsync(newSkill);
+        await dbContext.Skills.AddAsync(skill);
         await dbContext.SaveChangesAsync();
-        return Results.Ok(newSkill);
-
+       
+        return Results.Ok();
     }
-    catch
+    catch (Exception)
     {
-        return Results.Problem("Server Error");
+        return Results.StatusCode(500);
     }
 });
 

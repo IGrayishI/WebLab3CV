@@ -3,8 +3,10 @@
 @inject APICRUD apiCRUD
 @inject string APIConnection
 @using Microsoft.AspNetCore.Components
+@using System.Text.Json
 @page "/"
 
+<body>
 <PageTitle>Index</PageTitle>
 <h1>Hello, world!</h1>
 
@@ -13,53 +15,61 @@ Welcome to your new app.
 <AuthorizeView>
     <NotAuthorized>
         <p>You are not signed in.</p>
-        @foreach (var item in listOfSkills)
+        @if (listOfSkills is null)
         {
-            <div class="card">
-                <h4>@item.Title</h4>
-                <p>@item.Description</p>
-                <p>@item.SkillLevel /10</p>
-                <p>@item.YearsOfExperience Years of Experience</p>
-            </div>
+            <p>Skill List Empty</p>
+        } else
+        {
+            @foreach (var item in listOfSkills)
+            {
+                <div class="card p-2">
+                    <h4>@item.Title</h4>
+                    <p>@item.Description</p>
+                    <p>@item.SkillLevel /10</p>
+                    <p>@item.YearsOfExperience Years of Experience</p>
+                </div>
+            }
         }
     </NotAuthorized>
-    <Authorized>
-
-    </Authorized>
-</AuthorizeView>
         
-        <EditForm Model="NewSkill" OnValidSubmit="SubmitSkill">
+    <Authorized>
+        <EditForm Model="NewSkill" OnSubmit="SubmitSkill" Context="EditContext">
             <DataAnnotationsValidator />
         
             <div class="form-group">
-            <label>Title</label>
+            <label for="title">Title</label>
             <InputText class="form-control" @bind-Value="NewSkill.Title" ></InputText>
             </div>
         
             <div class="form-group">
-            <label>Description</label>
+            <label for="title">Description</label>
             <InputText class="form-control" @bind-Value="NewSkill.Description" ></InputText>
             </div>
         
             <div class="form-group">
-                <label>Level</label>
+                <label for="title">Level</label>
                 <InputNumber class="form-control" @bind-Value="NewSkill.SkillLevel"></InputNumber>
             </div>
-    <div class="form-group">
-        <label>Years of Experience</label>
-        <InputNumber class="form-control" @bind-Value="NewSkill.YearsOfExperience"></InputNumber>
-    </div>
-            <button class="btn btn-primary" type="submit" >Submit</button>
+            
+            <div class="form-group">
+            <label for="label">Years of Experience</label>
+            <InputNumber class="form-control" @bind-Value="NewSkill.YearsOfExperience"></InputNumber>
+            </div><br/>
+            
+            <button class="btn btn-primary my-2" type="submit" >Submit</button>
         
         </EditForm>
-
-<SurveyPrompt Title="How is Blazor working for you?" />
-
+    </Authorized>
+</AuthorizeView>
         
-@code {
-    private Skills NewSkill { get; set; } = new();
-    List<Skills> listOfSkills { get; set; }
+</body>
 
+@code {
+    //--- Properties ---
+    private Skills NewSkill { get; set; } = new() {Id = Guid.NewGuid()};
+    List<Skills>? listOfSkills;
+
+    //---Methods---
 
     protected override async Task OnInitializedAsync()
     {
@@ -73,17 +83,18 @@ Welcome to your new app.
         }
     }
 
-    private async Task SubmitSkill()
+    //Doesnt Work for some reason.
+    private async Task SubmitSkill() 
     {
         try
         {
             await apiCRUD.AddSkill(APIConnection, NewSkill);
-            NewSkill = new();
-
-        } catch(Exception ex)
+            NewSkill = new() { Id = Guid.NewGuid() };
+        }
+        catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            //Some sort of error logger?
+            Console.WriteLine($"Error. {ex.Message}");
         }
     }
-
 }
