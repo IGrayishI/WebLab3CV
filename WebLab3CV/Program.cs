@@ -26,7 +26,6 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<APICRUD>();
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

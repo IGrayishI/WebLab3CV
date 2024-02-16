@@ -33,29 +33,34 @@ Welcome to your new app.
     </NotAuthorized>
         
     <Authorized>
-        <EditForm Model="NewSkill" OnSubmit="SubmitSkill" Context="EditContext">
+        <EditForm Model="NewSkill" @OnValidSubmit="SubmitSkill" Context="editContext">
             <DataAnnotationsValidator />
         
             <div class="form-group">
             <label for="title">Title</label>
             <InputText class="form-control" @bind-Value="NewSkill.Title" ></InputText>
+                    <ValidationMessage For="@(() => NewSkill.Title)" />
             </div>
         
             <div class="form-group">
-            <label for="title">Description</label>
+            <label for="description">Description</label>
             <InputText class="form-control" @bind-Value="NewSkill.Description" ></InputText>
+                    <ValidationMessage For="@(() => NewSkill.Description)"  />
             </div>
         
             <div class="form-group">
-                <label for="title">Level</label>
+                <label for="level">Level</label>
                 <InputNumber class="form-control" @bind-Value="NewSkill.SkillLevel"></InputNumber>
+                    <ValidationMessage For="@(() => NewSkill.SkillLevel)" />
             </div>
             
             <div class="form-group">
-            <label for="label">Years of Experience</label>
-            <InputNumber class="form-control" @bind-Value="NewSkill.YearsOfExperience"></InputNumber>
+                    <label for="years-of-experience">Years of Experience</label>
+                    <InputNumber class="form-control" @bind-Value="NewSkill.YearsOfExperience"></InputNumber>
+                    <ValidationMessage For="@(() => NewSkill.YearsOfExperience)" />
             </div><br/>
-            
+                <ValidationSummary />
+           
             <button class="btn btn-primary my-2" type="submit" >Submit</button>
         
         </EditForm>
@@ -89,7 +94,8 @@ Welcome to your new app.
         try
         {
             await apiCRUD.AddSkill(APIConnection, NewSkill);
-            NewSkill = new() { Id = Guid.NewGuid() };
+            // NewSkill = new() { Id = Guid.NewGuid() };
+            Console.WriteLine("SubmitSkill Complete");
         }
         catch (Exception ex)
         {
